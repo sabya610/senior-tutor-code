@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Senior Tutor</title>
+  <link rel="icon" href="data:,">
+  <script src="js/theme-init.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="app-header" id="app-header">
+    <button type="button" class="icon-btn nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-controls="app-nav" aria-expanded="false"></button>
+    <a class="brand" href="#/dashboard" aria-label="Senior Tutor home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Senior Tutor</span>
+    </a>
+
+    <div class="header-controls" role="group" aria-label="Context">
+      <div class="field-inline">
+        <label for="repo-select">Repository</label>
+        <select id="repo-select"></select>
+      </div>
+      <div class="field-inline" id="feature-field" hidden>
+        <label for="feature-select">Feature</label>
+        <select id="feature-select"></select>
+      </div>
+      <div class="field-inline" id="depth-field" hidden>
+        <label for="depth-select">Depth</label>
+        <select id="depth-select"></select>
+      </div>
+    </div>
+
+    <div class="header-status">
+      <span class="badge badge-info" id="index-pill" hidden role="status"></span>
+      <a class="badge" id="provider-badge" href="#/settings" title="LLM provider (open Settings)">Provider: checking</a>
+      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Switch colour theme"></button>
+    </div>
+  </header>
+
+  <nav class="app-nav" id="app-nav" aria-label="Main"></nav>
+  <div class="nav-scrim" id="nav-scrim" hidden></div>
+
+  <main class="app-main" id="main" tabindex="-1"></main>
+
+  <div class="scrim" id="drawer-scrim" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <div class="drawer-head">
+      <div class="drawer-titles">
+        <h2 id="drawer-title" class="drawer-title"></h2>
+        <p class="drawer-sub" id="drawer-sub"></p>
+      </div>
+      <button type="button" class="icon-btn" id="drawer-close" aria-label="Close code viewer"></button>
+    </div>
+    <div class="drawer-banner" id="drawer-banner" role="alert" hidden></div>
+    <div class="drawer-tools" id="drawer-tools"></div>
+    <div class="drawer-body" id="drawer-body" tabindex="0" aria-label="Source code"></div>
+  </aside>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Senior Tutor needs JavaScript enabled to run.</p></noscript>
+</body>
+</html>
