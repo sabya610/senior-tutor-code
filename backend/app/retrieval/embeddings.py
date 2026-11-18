@@ -50,8 +50,11 @@ def tokenize(text: str) -> list[str]:
 class LocalHashEmbedder:
     """Dependency-free hashing embedder: works offline, deterministic, good for lexical overlap."""
 
-    # Hash collisions give unrelated chunks cosines up to ~0.15, so only clearly lexical overlap counts as a hit.
+    # Hash collisions give most unrelated chunks cosines up to ~0.15, so the floor sits above that. A short query
+    # meeting a tiny chunk can still clear it through a single colliding bucket, which is why the retriever also
+    # requires a hit to contain a query term when `lexical` is set.
     min_similarity = 0.22
+    lexical = True
 
     def __init__(self, dims: int = 512):
         self.dims = dims

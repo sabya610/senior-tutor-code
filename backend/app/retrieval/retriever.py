@@ -147,7 +147,11 @@ class Retriever:
         floor = getattr(embedder, "min_similarity", 0.2)
         top = np.argsort(-scores)[:limit]
         top = [i for i in top if scores[i] >= floor]
-        return self._load_hits([int(ids[i]) for i in top], "semantic")
+        hits = self._load_hits([int(ids[i]) for i in top], "semantic")
+        if getattr(embedder, "lexical", False):
+            wanted = [stem(t) for t in query_terms(query)]
+            hits = [h for h in hits if any(t in h.text.lower() for t in wanted)]
+        return hits
 
     def _symbol_hits(self, repo_id: int, query: str, limit: int = 40) -> list[Hit]:
         """Symbols whose name contains query terms (substring, so 'reconciler' finds 'IsvcReconciler.Reconcile').

@@ -1,7 +1,9 @@
 """Retrieval quality, grounded answers, citation validation, follow-ups, caching and troubleshooting."""
 from __future__ import annotations
 
+import itertools
 import re
+import string
 
 from app.teaching.context import check_citations
 from app.teaching.orchestrator import is_followup
@@ -39,6 +41,20 @@ def test_mock_mode_is_evidence_only_and_says_so(rt, indexed):
 
 def test_no_evidence_means_no_invention(rt, indexed):
     result = rt.teacher.ask(repo_id=indexed, mode="explain", question="zzqxjv blorptastic frobnicator")
+    assert "will not guess" in result["answer"]
+    assert result["sources"] == []
+
+
+def test_hash_collision_is_not_evidence(rt, indexed):
+    embedder = rt.embedder()
+    _, matrix = rt.retriever._vector_matrix(indexed, embedder.name)
+    words = ("qz" + "".join(p) for p in itertools.product(string.ascii_lowercase, repeat=4))
+    word = next((w for w in words if (matrix @ embedder.embed([w])[0]).max() >= embedder.min_similarity), None)
+    assert word, "no chunk is small enough to collide with a one-word query"
+    assert rt.db.one("SELECT COUNT(*) AS n FROM chunks WHERE instr(lower(text), ?) > 0", (word,))["n"] == 0
+
+    assert rt.retriever.search(indexed, word) == []
+    result = rt.teacher.ask(repo_id=indexed, mode="explain", question=word)
     assert "will not guess" in result["answer"]
     assert result["sources"] == []
 
