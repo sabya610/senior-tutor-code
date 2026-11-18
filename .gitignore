@@ -1,0 +1,13 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime data and secrets
+data/
+.env
+*.db
+
+# Local workspace mount for docker-compose
+repos/
