@@ -100,6 +100,7 @@ def test_llm_failure_falls_back_to_evidence(rt, indexed, fake_llm):
     result = rt.teacher.ask(repo_id=indexed, mode="explain", question="create_order")
     assert "LLM unavailable" in result["answer"] and result["warnings"]
     assert result["explanation_id"] is None
+    assert result["provider"]["mock"] is True
 
 
 def test_compare_mode_needs_two_concepts_and_groups_results(rt, indexed):

@@ -181,7 +181,7 @@ class Teacher:
                 warnings.append("The answer contains no source citations; treat it as unverified.")
 
         meta = {"topic": topic, "mode": mode, "depth": depth, "provider": llm.name, "model": llm.model,
-                "mock": llm.is_mock, "warnings": warnings}
+                "mock": llm.is_mock or llm_failed, "warnings": warnings}
         session_id = self._record(repo_id, session_id, mode, question, answer, sources, feature, meta, compare_with)
 
         explanation_id = None
@@ -189,7 +189,7 @@ class Teacher:
             explanation_id = store.save_explanation(repo_id, mode, question, answer, sources, provider_label,
                                                     repo["index_rev"], cache_key)
         return self._result(session_id, answer, sources, llm, cached=False, explanation_id=explanation_id,
-                            citations=citations, resolved=resolved, warnings=warnings)
+                            citations=citations, resolved=resolved, warnings=warnings, evidence_only=llm_failed)
 
     # ------------------------------------------------------------------ internals
     def _messages(self, mode: str, depth: str, question: str, compare_with: str | None, feature: dict | None,
@@ -227,12 +227,15 @@ class Teacher:
         return session_id
 
     def _result(self, session_id: int, answer: str, sources: list[dict], llm, *, cached: bool, explanation_id: int | None,
-                citations: dict, resolved: dict | None, warnings: list[str]) -> dict:
+                citations: dict, resolved: dict | None, warnings: list[str], evidence_only: bool = False) -> dict:
+        provider = llm.describe()
+        if evidence_only:
+            provider = {**provider, "mock": True}  # the configured model failed, so this answer is evidence-only
         return {
             "session_id": session_id,
             "answer": answer,
             "sources": sources,
-            "provider": llm.describe(),
+            "provider": provider,
             "cached": cached,
             "explanation_id": explanation_id,
             "citations": citations,

@@ -51,6 +51,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response.headers.setdefault("Content-Security-Policy", CSP)
         if request.url.path.startswith("/api/") and not request.url.path.startswith("/api/docs"):
             response.headers.setdefault("Cache-Control", "no-store")
+        else:
+            # Always revalidate UI assets (ETag -> 304) so an upgraded image never serves stale JavaScript.
+            response.headers.setdefault("Cache-Control", "no-cache")
         return response
 
     @app.exception_handler(LookupError)
@@ -81,5 +84,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
 
 def app_factory() -> FastAPI:
-    logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     return create_app()

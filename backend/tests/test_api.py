@@ -95,6 +95,7 @@ def test_security_headers_present(client):
     assert headers["x-content-type-options"] == "nosniff"
     assert "default-src 'self'" in headers["content-security-policy"]
     assert headers["cache-control"] == "no-store"
+    assert client.get("/").headers["cache-control"] == "no-cache"
 
 
 def test_settings_roundtrip_and_validation(client):
