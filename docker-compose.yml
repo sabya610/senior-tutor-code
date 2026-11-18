@@ -4,7 +4,7 @@ services:
     build: .
     ports:
       # Bound to loopback on purpose: the app can read your source code.
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${TUTOR_PORT:-8000}:8000"
     environment:
       # Only repositories under /repos can be registered.
       ALLOWED_ROOTS: /repos

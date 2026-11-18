@@ -23,6 +23,9 @@ docker run -d --name senior-tutor -p 127.0.0.1:8000:8000 \
 Open <http://localhost:8000>, go to **My Repositories**, add a path under `/repos` (for example `/repos/my-service`),
 and click **Index**.
 
+Port 8000 already taken? Change the first number: `-p 127.0.0.1:8080:8000` (with Compose: `TUTOR_PORT=8080 docker compose up -d`)
+and open <http://localhost:8080> instead.
+
 With Docker Compose (builds locally, or pulls the published image):
 
 ```bash
