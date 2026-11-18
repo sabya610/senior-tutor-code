@@ -1,0 +1,26 @@
+services:
+  senior-tutor:
+    image: sabya610/senior-tutor:latest
+    build: .
+    ports:
+      # Bound to loopback on purpose: the app can read your source code.
+      - "127.0.0.1:8000:8000"
+    environment:
+      # Only repositories under /repos can be registered.
+      ALLOWED_ROOTS: /repos
+      # auto | openai | ollama | mock  (auto falls back to evidence-only mode when nothing is configured)
+      LLM_PROVIDER: ${LLM_PROVIDER:-auto}
+      LLM_MODEL: ${LLM_MODEL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Ollama running on the Docker host
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - tutor-data:/data
+      # Put (or symlink) the repositories you want to study in ./repos; mounted read-only.
+      - ./repos:/repos:ro
+    restart: unless-stopped
+
+volumes:
+  tutor-data:

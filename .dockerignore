@@ -1,0 +1,17 @@
+.git
+.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/node_modules
+data
+repos
+.env
+*.db
+backend/tests
+backend/requirements-dev.txt
+backend/pytest.ini
+assets
+docs
+*.md
